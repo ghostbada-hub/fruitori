@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FruitoTri 🍓 — Jeu de Tri de Fruits</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ══ ÉCRAN D'ACCUEIL ══ -->
+<div id="screen-home" class="screen active">
+  <div class="home-bg">
+    <div class="floating-fruit" style="--x:5%;--y:10%;--s:2.2;--d:0s">🍎</div>
+    <div class="floating-fruit" style="--x:88%;--y:8%;--s:1.8;--d:0.5s">🍌</div>
+    <div class="floating-fruit" style="--x:15%;--y:75%;--s:2;--d:1s">🍇</div>
+    <div class="floating-fruit" style="--x:80%;--y:70%;--s:2.4;--d:1.5s">🍊</div>
+    <div class="floating-fruit" style="--x:50%;--y:5%;--s:1.6;--d:0.8s">🍓</div>
+    <div class="floating-fruit" style="--x:92%;--y:45%;--s:1.5;--d:2s">🍋</div>
+    <div class="floating-fruit" style="--x:3%;--y:45%;--s:1.9;--d:1.2s">🍉</div>
+    <div class="floating-fruit" style="--x:60%;--y:85%;--s:1.7;--d:0.3s">🍑</div>
+    <div class="floating-fruit" style="--x:35%;--y:90%;--s:2.1;--d:1.8s">🥝</div>
+  </div>
+  <div class="home-content">
+    <div class="home-logo">
+      <div class="logo-emoji">🍓</div>
+      <h1>FruitoTri</h1>
+      <p class="home-tagline">Le jeu de tri de fruits !</p>
+    </div>
+    <div class="mode-cards">
+      <div class="mode-card" onclick="selectMode('couleur')">
+        <div class="mode-icon">🎨</div>
+        <h3>Trier par Couleur</h3>
+        <p>Range les fruits dans le bon panier selon leur couleur</p>
+        <div class="mode-tag">Visuel</div>
+      </div>
+      <div class="mode-card" onclick="selectMode('taille')">
+        <div class="mode-icon">📏</div>
+        <h3>Trier par Taille</h3>
+        <p>Classe les fruits du plus petit au plus grand</p>
+        <div class="mode-tag">Logique</div>
+      </div>
+      <div class="mode-card" onclick="selectMode('panier')">
+        <div class="mode-icon">🧺</div>
+        <h3>Trier par Catégorie</h3>
+        <p>Met chaque fruit dans son bon panier de famille</p>
+        <div class="mode-tag">Connaissance</div>
+      </div>
+    </div>
+    <div class="difficulty-row">
+      <span class="diff-label">Niveau :</span>
+      <button class="diff-btn active" id="btn-easy" onclick="setDifficulty('facile')">⭐ Facile</button>
+      <button class="diff-btn" id="btn-hard" onclick="setDifficulty('moyen')">⭐⭐ Moyen</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ JEU : TRI PAR COULEUR ══ -->
+<div id="screen-couleur" class="screen">
+  <div class="game-header">
+    <button class="back-btn" onclick="goHome()">← Accueil</button>
+    <div class="game-title">🎨 Tri par Couleur</div>
+    <div class="hud">
+      <div class="hud-item">⭐ <span id="c-score">0</span></div>
+      <div class="hud-item timer-hud" id="c-timer-hud">⏱ <span id="c-timer">60</span>s</div>
+      <div class="hud-item">🍎 <span id="c-left">0</span></div>
+    </div>
+  </div>
+  <div class="game-zone couleur-zone">
+    <div class="progress-bar-wrap"><div class="progress-bar" id="c-progress"></div></div>
+    <div class="fruits-source" id="c-fruits"></div>
+    <div class="baskets-row" id="c-baskets"></div>
+  </div>
+</div>
+
+<!-- ══ JEU : TRI PAR TAILLE ══ -->
+<div id="screen-taille" class="screen">
+  <div class="game-header">
+    <button class="back-btn" onclick="goHome()">← Accueil</button>
+    <div class="game-title">📏 Tri par Taille</div>
+    <div class="hud">
+      <div class="hud-item">⭐ <span id="t-score">0</span></div>
+      <div class="hud-item timer-hud" id="t-timer-hud">⏱ <span id="t-timer">60</span>s</div>
+      <div class="hud-item">🔢 Round <span id="t-round">1</span></div>
+    </div>
+  </div>
+  <div class="game-zone taille-zone">
+    <div class="progress-bar-wrap"><div class="progress-bar" id="t-progress"></div></div>
+    <p class="instruction">Glisse les fruits dans l'ordre du <strong>plus petit</strong> au <strong>plus grand</strong> 👇</p>
+    <div class="taille-source" id="t-fruits"></div>
+    <div class="taille-slots" id="t-slots"></div>
+    <button class="check-btn" onclick="checkTaille()">✅ Vérifier !</button>
+  </div>
+</div>
+
+<!-- ══ JEU : TRI PAR CATÉGORIE ══ -->
+<div id="screen-panier" class="screen">
+  <div class="game-header">
+    <button class="back-btn" onclick="goHome()">← Accueil</button>
+    <div class="game-title">🧺 Tri par Catégorie</div>
+    <div class="hud">
+      <div class="hud-item">⭐ <span id="p-score">0</span></div>
+      <div class="hud-item timer-hud" id="p-timer-hud">⏱ <span id="p-timer">60</span>s</div>
+      <div class="hud-item">🍎 <span id="p-left">0</span></div>
+    </div>
+  </div>
+  <div class="game-zone panier-zone">
+    <div class="progress-bar-wrap"><div class="progress-bar" id="p-progress"></div></div>
+    <div class="fruits-source" id="p-fruits"></div>
+    <div class="baskets-row" id="p-baskets"></div>
+  </div>
+</div>
+
+<!-- ══ ÉCRAN RÉSULTAT ══ -->
+<div id="screen-result" class="screen">
+  <div class="result-bg">
+    <div class="confetti-wrap" id="confetti"></div>
+  </div>
+  <div class="result-content">
+    <div class="result-trophy" id="result-trophy">🏆</div>
+    <h2 id="result-title">Bravo !</h2>
+    <div class="result-score-big" id="result-score"></div>
+    <p id="result-msg"></p>
+    <div class="result-stars" id="result-stars"></div>
+    <div class="result-btns">
+      <button class="rbtn rbtn-replay" onclick="replayGame()">🔄 Rejouer</button>
+      <button class="rbtn rbtn-home" onclick="goHome()">🏠 Accueil</button>
+    </div>
+  </div>
+</div>
+
+<!-- Feedback visuel drag -->
+<div id="drag-ghost" class="drag-ghost"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
